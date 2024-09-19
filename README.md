@@ -17,7 +17,7 @@ CodePulse is an educational tool designed to help users understand web applicati
 ## Installation and Setup
 To get CodePulse running locally:
 ```bash
-git clone https://github.com/DjenaSiabdellah/CodePulse.git
+git clone https://github.com/titocarlos080/codepulse.git
 cd CodePulse
 pip install -r requirements.txt
 python manage.py runserver
