@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Code Pulse</title>
+
+    <!-- I included the Font Awesome library for access to a wide range of icons, enhancing the visual design without additional graphics. -->
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    <header>
+        <div class="menu-btn"></div> <!-- Placeholder for menu button, potentially for a mobile responsive menu. -->
+        <nav>
+            <!-- Navigation section with list of links for site navigation. -->
+            <ul>
+                <li><a href="{% url 'about' %}">More Information</a></li> <!-- Navigation link to the 'About' page. -->
+                <li><a href="{% url 'register' %}">Get Started</a></li> <!-- Navigation link to the 'Register' page. -->
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main content area featuring a dynamic, animated background and a typewriter effect for text display. -->
+    <main class="pulse">
+        <div class="content active">
+            <h1>Welcome to CodePulse</h1> <!-- main heading displayed prominently. -->
+            <p class="robotic" id="typewriter"></p> <!-- Paragraph for displaying animated text using a typewriter effect. -->
+        </div>
+    </main>
+    <!-- JavaScript for typewriter effect, dynamically displaying text in a styled paragraph. -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const text = "CodePulse is a web vulnerability scanner designed to help both developers and security professionals uncover potential security threats within their web applications efficiently. Our tool automates the process of scanning for common vulnerabilities such as SQL Injection, and XSS (Cross-Site Scripting), enabling you to proactively address security issues.";
+            const typewriter = document.getElementById('typewriter');
+            let i = 0;
+            
+            function typeWriter() {
+                if (i < text.length) {
+                    typewriter.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 70); // pace at which characters are added to the typewriter effect.
+                }
+            }
+
+            typeWriter(); // typewriter effect on as soon as the document is fully loaded.
+        });
+    </script>
+
+    <!-- JavaScript for responsive navigation menu toggle. -->
+    <script>
+        const menuBtn = document.querySelector(".menu-btn");
+        const navigation = document.querySelector("nav");
+
+        menuBtn.addEventListener("click", () => {
+            menuBtn.classList.toggle("active"); // 'active' class on the menu button.
+            navigation.classList.toggle("active"); // 'active' class on the navigation, 
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for Code Pulse</title>
+    <!--Stylesheet-->
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+</head>
+
+<body>
+    
+<header>
+        <div class="menu-btn"></div>
+        <nav>
+          <ul>
+              <!--navigations -->
+            <li><a href="{% url 'about' %}">More Information</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
+          </ul>
+        </nav>
+      </header>
+
+    <!-- Main content area with login form -->
+    <main>
+            <div class="background">
+                <div class="shape"></div> <!-- shapes in the background -->
+                <div class="shape"></div>
+            </div>
+    
+            <div class="forms-container">
+                <form method="post">
+                    <h3>Login Here</h3>  <!-- Form heading -->
+                    {% csrf_token %}  <!-- Security token for protecting against CSRF attacks -->
+                    <label for="username">Username</label>  <!-- Username field -->
+                    <input type="text" placeholder="Enter Username" id="username" name="username">
+                    <label for="password">Password</label>  <!-- Password field -->
+                    <input type="password" placeholder="Password" id="password" name="password">
+                    <button type="submit">Log In</button>  <!-- Submission button -->
+                    <a href="{% url 'register' %}">Create a account</a>  <!-- Link to registration page -->
+                </form>
+            </div>
+        </main>
+    </body>
+    </html>
