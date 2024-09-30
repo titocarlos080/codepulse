@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Sites</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/scaned_sites.css' %}">
+</head>
+
+ 
+<body>
+    <header > 
+        <nav class="top-nav">
+            <a href="{% url 'signout' %}">Sign Out</a>
+            <a href="{% url 'xss_page' %}">Cross Site Scripting (XSS)</a>
+            <a href="{% url 'sql_injection_page' %}">SQL Injection </a>                     
+            <a href="{% url 'csrf_page' %}">Cross Site Request Forgery (CSRF)</a>
+        </nav>
+        <h1>Welcome, {{ username }}!</h1>
+        <ul>
+            {% for scan in scanned_urls %}
+                <li>{{ scan.url }} - Scanned on: {{ scan.scanned_on }}</li>
+            {% empty %}
+                <li>No scanned URLs found.</li>
+            {% endfor %}
+        </ul>
+        <h1>Scan here</h1>
+    </header>
+</body>
+</html>

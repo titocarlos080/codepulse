@@ -99,7 +99,7 @@ DATABASES = {
     },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'codepulse',  # Nombre de tu base de datos PostgreSQL
+        'NAME': 'code_pulse',  # Nombre de tu base de datos PostgreSQL
         'USER': 'tito',                    # Usuario de PostgreSQL
         'PASSWORD': '123',             # Contraseña de PostgreSQL
         'HOST': 'localhost',                  # Dirección del servidor (puede ser 'localhost' o la IP si está en otro servidor)
@@ -142,7 +142,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

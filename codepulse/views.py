@@ -221,6 +221,7 @@ def user_login(request):
         # these are expected to be provided by a login form where users enter their credentials.
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
         # this Uses Django's built-in `authenticate` method to verify the credentials. 
         # If the credentials are valid, it returns a User object. Otherwise, it returns None.
         user = authenticate(username=username, password=password) # Authenticate user.
@@ -236,6 +237,13 @@ def user_login(request):
             return render(request, 'login.html', {'error': 'Bad credentials, please try again'}, status=200)
     return render(request, 'login.html')
 
+@login_required
+def scaned_sites(request):
+    scanned_urls = ScanResult.objects.filter(user=request.user)
+    return render(request, 'scaned_sites.html', {  'username': request.user.username, 'scanned_urls': scanned_urls })
+
+    # return render(request, 'scanner.html', {'username': request.user.username})
+
 
 @login_required
 def scanner(request):
@@ -247,6 +255,7 @@ def scanner(request):
         if request.method == 'POST':
             # Retrieve the code input from the POST data, defaulting to an empty string if not found.
             code_input = request.POST.get('code_input', '')
+          
             
             # use a custom function to detect any XSS vulnerabilities in the code input.
             xss_vulnerabilities = detect_xss_vulnerability(code_input)

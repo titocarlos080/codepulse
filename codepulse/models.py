@@ -4,10 +4,9 @@
 # https://github.com/adeyosemanputra/pygoat/blob/master/introduction/models.py
 
 
-
+from django.conf import settings  # Import to get the user model
 from django.db import models
 from django.contrib.auth.models import AbstractUser #, Group, Permission
-
 
 class CustomUser(AbstractUser):
     # Your custom user model code
@@ -32,21 +31,14 @@ class CustomUser(AbstractUser):
 
 # ScanResult model stores the results of security scans performed on URLs.
 class ScanResult(models.Model):
-    # URL field to store the address of the scanned site.
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     url = models.URLField()
-    # date and time of the scan, set automatically on creation.
     scanned_on = models.DateTimeField(auto_now_add=True)
-    # boolean field to indicate if XSS vulnerabilities were detected.
     xss_detected = models.BooleanField(default=False)
-    # boolean field to indicate if SQL Injection vulnerabilities were detected.
     sql_injection_detected = models.BooleanField(default=False)
-    # boolean field to indicate if CSRF vulnerabilities were detected.
     csrf_issues_detected = models.BooleanField(default=False)
-    # for additional info or detailed results
-    additional_info = models.TextField(blank=True, null=True)  
+    additional_info = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        # this string representation of the ScanResult that includes the URL and the date of the scan.
         return f"Scan for {self.url} on {self.scanned_on}"
-
 

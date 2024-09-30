@@ -1,7 +1,9 @@
 from django.http import JsonResponse
 import requests
 import logging
-import re  
+import re
+
+from codepulse.models import ScanResult  
 
 # This essentailly sets up logging to help me enable tracking of information and errors 
 logger = logging.getLogger(__name__)
@@ -143,7 +145,10 @@ def url_scanner(request):
     if request.method == 'POST':
         # this retrieves the 'url_input' value from the POST data. The second parameter is the default value if 'url_input' isn't found.
         url = request.POST.get('url_input', '')
-        print(is_valid_url(url))
+        print('La url es ' + ('válida' if is_valid_url(url) else 'no válida'))
+       
+       
+
         # this calls the `is_valid_url` function to check if the URL meets specific criteria (like being a local URL).
         if not is_valid_url(url):
             # this returns a JSON response with an error message if the URL is invalid, setting the HTTP status to 400 (Bad Request).
@@ -160,6 +165,16 @@ def url_scanner(request):
         xss_vulnerabilities = detect_xss_vulnerability(html_content)
         sql_injection_vulnerabilities = detect_sql_injection(html_content)
 
+ # Register scan result to the database for the corresponding user
+        scan_result = ScanResult.objects.create(
+            user=request.user,  # Link the scan to the logged-in user
+            url=url,  # Save the URL
+            xss_detected=bool(xss_vulnerabilities),  # Record whether XSS vulnerabilities were found
+            sql_injection_detected=bool(sql_injection_vulnerabilities),  # Record whether SQL Injection vulnerabilities were found
+            additional_info=f"XSS: {xss_vulnerabilities}, SQL Injection: {sql_injection_vulnerabilities}"  # Save additional scan details
+        )
+
+
         # this compiles the results of the scans into a dictionary.
         results = {
             'XSS': xss_vulnerabilities,
@@ -175,3 +190,7 @@ def url_scanner(request):
         return JsonResponse({'message': 'Scan complete', 'results': results})
     # if the request method is not POST, returns a JSON response indicating the request method is not allowed, with a 405 status.
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+ # registration of the url in the database for the corresponding user
+# print(request.user.id)

@@ -26,6 +26,8 @@ urlpatterns = [
     path('url_scanner/', url_scanner, name='url_scanner'),
     # routes to 'scanner' view and named as 'scanner'
     path('scanner/', views.scanner, name='scanner'),
+    # routes to 'scaned_sites' view and named as 'scaned_sites'
+    path('scaned_sites/', views.scaned_sites, name='scaned_sites'),
     # routes to 'signout' view and named as 'signout'
     path('signout/', views.signout, name='signout'),
     # routes to 'xss_page' view and named as 'xss_page'
