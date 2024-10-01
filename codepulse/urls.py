@@ -7,7 +7,7 @@ from django.urls import path
 # import views from the current directory to use in url patterns
 from . import views
 # import specific views functions directly for easy access
-from .utils import url_scanner
+from . import  utils
 from django.conf.urls import handler404
 
 # urlpatterns list to hold the url configurations
@@ -23,11 +23,14 @@ urlpatterns = [
     # routes to 'user_login' view and named as 'login'
     path('login/', views.user_login, name='login'),
     # routes to 'url_scanner' view and named as 'url_scanner'
-    path('url_scanner/', url_scanner, name='url_scanner'),
+    path('url_scanner/', utils.url_scanner, name='url_scanner'),
     # routes to 'scanner' view and named as 'scanner'
     path('scanner/', views.scanner, name='scanner'),
     # routes to 'scaned_sites' view and named as 'scaned_sites'
     path('scaned_sites/', views.scaned_sites, name='scaned_sites'),
+    
+    path('port_scanner/',views.port_scanner, name='port_scanner'),
+    
     # routes to 'signout' view and named as 'signout'
     path('signout/', views.signout, name='signout'),
     # routes to 'xss_page' view and named as 'xss_page'

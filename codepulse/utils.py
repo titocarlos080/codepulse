@@ -1,8 +1,8 @@
 from django.http import JsonResponse
+import nmap
 import requests
 import logging
 import re
-
 from codepulse.models import ScanResult  
 
 # This essentailly sets up logging to help me enable tracking of information and errors 
@@ -165,7 +165,7 @@ def url_scanner(request):
         xss_vulnerabilities = detect_xss_vulnerability(html_content)
         sql_injection_vulnerabilities = detect_sql_injection(html_content)
 
- # Register scan result to the database for the corresponding user
+        # Register scan result to the database for the corresponding user
         scan_result = ScanResult.objects.create(
             user=request.user,  # Link the scan to the logged-in user
             url=url,  # Save the URL
@@ -194,3 +194,5 @@ def url_scanner(request):
 
  # registration of the url in the database for the corresponding user
 # print(request.user.id)
+
+ 

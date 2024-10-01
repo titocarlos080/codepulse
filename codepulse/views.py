@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 
 # Import Django's messaging framework to provide feedback to users about actions (e.g., errors, success messages).
 from django.contrib import messages
+import nmap
 
 # Import form handling utilities from Django to manage form submissions and validations.
 from .forms import RegistrationForm, CodeForm, UrlForm
@@ -318,6 +319,8 @@ def custom_404(request, exception):
 
 
 
+
+
 # logs out the user and redirects them to the home page.
 def signout(request):
     # Handles user logout and redirects to home page
@@ -338,3 +341,43 @@ def sql_injection_page(request):
 def csrf_page(request):
     # render and return the CSRF (Cross-Site Request Forgery) information page to the user.
     return render(request, 'csrf.html')
+
+
+ 
+
+@csrf_exempt
+def port_scanner(request):
+    if request.method == 'POST':
+        hostname = request.POST.get('hostname')
+
+        if not hostname:
+            return JsonResponse({'error': 'Hostname is required'}, status=400)
+
+        nm = nmap.PortScanner()
+
+        try:
+            nm.scan(hostname, '1-1024')
+
+            scan_data = {}
+            for host in nm.all_hosts():
+                scan_data[host] = {
+                    'hostname': nm[host].hostname(),
+                    'state': nm[host].state(),
+                    'open_ports': []
+                }
+
+                for proto in nm[host].all_protocols():
+                    lport = nm[host][proto].keys()
+                    for port in lport:
+                        scan_data[host]['open_ports'].append({
+                            'port': port,
+                            'state': nm[host][proto][port]['state'],
+                            'service': nm[host][proto][port]['name']
+                        })
+            print( 'scaned_ports: ',scan_data)
+            return JsonResponse(scan_data)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

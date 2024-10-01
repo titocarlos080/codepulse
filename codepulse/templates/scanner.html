@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,183 +8,144 @@
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/scanner.css' %}">
 </head>
-   
 <body>
-        <header> 
-            <!-- Link for signing out of the application, URL is dynamically generated with a template. -->
-            <nav class="top-nav">
-                <a href="{% url 'signout' %}">Sign Out</a>
-                <a href="{% url 'xss_page' %}">Cross Site Scripting (XSS)</a>
-                <a href="{% url 'sql_injection_page' %}">SQL Injection </a>                     
-                <a href="{% url 'csrf_page' %}">Cross Site Request Forgery (CSRF)</a>
-                <a href="{% url 'scaned_sites' %}">Scaned Sites</a>
-
-            </nav>
-
-            <h1>Welcome, {{ username }}!</h1>
-            <!-- Displays a welcome message to the user, username is inserted. -->
-            {% if messages %}
-            <!-- Template condition to check if there are messages to display. -->
-            <div class="messages">
-                {% for message in messages %}
-                <!-- Loop through each message and display it. -->
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            <!-- End of message display section. -->
-
-            <h1>Scan here</h1>
-        </header>
-        <main>
-            <section>
-                <h2>URL Scan</h2>
-                <!-- Section for URL scanning feature. -->
-                <form id="url_scan_form" action="{% url 'url_scanner' %}" method="post">
-                        <!-- Form to submit a URL for scanning, with action URL dynamically generated. -->
-                        {% csrf_token %}
-                        <!-- Include CSRF token for protection against CSRF attacks. -->
-                        <input type="text" name="url_input" id="url_input" placeholder="Enter website URL" required>
-                        <!-- Text input for the URL. -->
-                        <button type="submit">Scan URL</button>
-                        <!-- Submit button for the form. -->
-                    </form>
-                    <!-- Hidden alert box for displaying scan results or messages dynamically -->
-        <div id="alert-box" style="display:none;">
-                <!-- Close button for the alert box -->
+    <header> 
+        <nav class="top-nav">
+            <a href="{% url 'signout' %}">Sign Out</a>
+            <a href="{% url 'xss_page' %}">Cross Site Scripting (XSS)</a>
+            <a href="{% url 'sql_injection_page' %}">SQL Injection</a>                     
+            <a href="{% url 'csrf_page' %}">Cross Site Request Forgery (CSRF)</a>
+            <a href="{% url 'scaned_sites' %}">Scaned Sites</a>
+        </nav>
+        <h1>Welcome, {{ username }}!</h1>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <h1>Scan here</h1>
+    </header>
+    <main>
+        <section>
+            <h2>URL Scan</h2>
+            <form id="url_scan_form" action="{% url 'url_scanner' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="url_input" id="url_input" placeholder="Enter website URL" required>
+                <button type="submit">Scan URL</button>
+            </form>
+            <div id="alert-box" style="display:none;">
                 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                <!-- Paragraph for dynamically showing alert messages -->
                 <p id="alert-content">Waiting for message...</p>
             </div>
         </section>
     
-        <!-- Section dedicated to code scanning functionality -->
         <section>
             <h2>Code Scan</h2>
-            <!-- Heading indicates the section is for code scanning -->
-    
-            <!-- Form for submitting code to be scanned. Action URL is dynamically generated -->
             <form method="post" action="{% url 'scanner' %}">
                 {% csrf_token %}
-                <!-- CSRF token for security -->
-    
-                <!-- Label and large text area for users to enter the code they wish to scan -->
                 <label for="code_input">Enter Your Code :</label>
                 <textarea id="code_input" name="code_input" rows="10" cols="50"></textarea>
-                
-                <!-- Button to submit the form and initiate the code scan -->
                 <button type="submit">Generate Scanner</button>
             </form>
-            
-            <!-- Conditional display of scan results or vulnerability messages -->
             {% if vulnerability_message %}
             <div class="alert-box" id="alert-box">
-                <!-- Close button for the alert box -->
                 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                <!-- Displays the vulnerability message if any are found -->
                 <p>{{ vulnerability_message|safe }}</p>
             </div>
             {% endif %}
         </section>
-    </main>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    </body>
-</section>
+        <!-- Nueva sección para el escáner de puertos -->
+        <section>
+            <h2>Port Scan</h2>
+            <form id="port_scan_form" action="{% url 'port_scanner' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="hostname" id="hostname" placeholder="Enter hostname or IP address" required>
+                <button type="submit">Scan Ports</button>
+            </form>
+            <div id="port-alert-box" style="display:none;">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <p id="port-alert-content">Waiting for message...</p>
+            </div>
+        </section>
     </main>
     
-    </body>
-</html>
-<script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            /* this splits document.cookie at each ';' to get an array of cookies */
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                /* trims whitespace from each cookie string */
-                const cookie = jQuery.trim(cookies[i]);
-                /* checks if the cookie string starts with the name and '='*/
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    /* decodes and returns the cookie value */
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#url_scan_form').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: "POST",
+                    data: formData,
+                    success: function(response) {
+                        // Handle response for URL scan
+                        showAlert(response.message, false);
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error occurred: ' + error, true);
+                    }
+                });
+            });
+
+            $('#port_scan_form').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: "POST",
+                    data: formData,
+                    success: function(response) {
+                        if (response.error) {
+                            showPortAlert(response.error, true);
+                        } else if (Object.keys(response).length === 0) {
+                            showPortAlert('No open ports found for the hostname.', true);
+                        } else {
+                            var message = 'Scan Results for ' + Object.keys(response)[0] + ':<br>';
+                            var openPorts = response[Object.keys(response)[0]].open_ports;
+            
+                            if (openPorts.length === 0) {
+                                message += 'No open ports found.';
+                            } else {
+                                openPorts.forEach(function(port) {
+                                    message += 'Port ' + port.port + ': ' + port.state + ' (' + port.service + ')<br>';
+                                });
+                            }
+                            showPortAlert(message, false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showPortAlert('Error occurred: ' + error, true);
+                    }
+                });
+            });
+            
+            function showAlert(message, isScanning) {
+                var alertBox = document.getElementById('alert-box');
+                alertBox.querySelector('#alert-content').innerHTML = message;
+                alertBox.style.display = 'block';
+                if (isScanning) {
+                    alertBox.style.backgroundColor = '#8B0000';
+                } else {
+                    alertBox.style.backgroundColor = '#FF6347';
                 }
             }
-        }
-        /* returns the cookie value or null if not found */
-        return cookieValue;
-    }
 
-    $(document).ready(function() {
-        $('#url_scan_form').submit(function(event) {
-            /* prevents the form from submitting normally */ 
-            event.preventDefault();
-            /* serializes the form data into a URL-encoded string */
-            var formData = $(this).serialize();
-
-            $.ajax({
-                /* gets the URL to send the data from the form's action attribute */
-                url: $(this).attr('action'),
-                /* sets method to POST */
-                type: "POST",
-                /* attachs the serialized data */
-                data: formData,
-                /* functions to handle a successful response */
-                success: function(response) {
-                    if (response.message === 'No vulnerabilities detected.') {
-                        showAlert(response.message, false);  // displays no vulnerabilities message
-                    } else if (response.results) {
-                        var messages = [];
-                        if (response.results.XSS.length > 0) { // check for XSS vulnerabilities
-                            messages.push('<strong>XSS Vulnerabilities Detected:</strong>'); 
-                            response.results.XSS.forEach(function(vuln) { // loop through XSS vulnerabilities
-                                /* formats and adds each vulnerability to messages */
-                                messages.push(`${vuln.description} (Severity: ${vuln.severity}) - ${vuln.remediation}`);
-                            });
-                        } else {
-                            messages.push('No XSS Vulnerabilities Detected.'); // adds no vulnerabilities message if none found
-                        }
-
-                        if (response.results['SQL Injection'].length > 0) { // checks for SQL Injection vulnerabilities
-                            messages.push('<strong>SQL Injection Vulnerabilities Detected:</strong>');
-                            response.results['SQL Injection'].forEach(function(vuln) { // loops through SQL Injection vulnerabilities
-                                /* formats and adds each vulnerability to messages */
-                                messages.push(`${vuln.description} (Severity: ${vuln.severity}) - ${vuln.remediation}`);
-                            });
-                        } else {
-                            /*this adds no vulnerabilities message if none found*/
-                            messages.push('No SQL Injection Vulnerabilities Detected.');
-                        }
-                        /* calls showAlert function to display formatted messages */
-                        showAlert(messages.join('<br>'), false);  // Display scan results
-                    } else {
-                        /* shows default no vulnerabilities message if none of the conditions met */
-                        showAlert('No vulnerabilities detected.', false);  // Fallback message
-                    }
-                },
-                /* functions to handle a failed response */
-                error: function(xhr, status, error) {
-                    /* calls showAlert function to display the error */
-                    showAlert('Error occurred: ' + error, true);  // Show error message
+            function showPortAlert(message, isScanning) {
+                var portAlertBox = document.getElementById('port-alert-box');
+                portAlertBox.querySelector('#port-alert-content').innerHTML = message;
+                portAlertBox.style.display = 'block';
+                if (isScanning) {
+                    portAlertBox.style.backgroundColor = '#8B0000';
+                } else {
+                    portAlertBox.style.backgroundColor = '#FF6347';
                 }
-            });
+            }
         });
-    });
-
-    function showAlert(message, isScanning) {
-        var alertBox = document.getElementById('alert-box'); // gets the alert-box element
-        alertBox.querySelector('#alert-content').innerHTML = message; // sets the innerHTML of alert-content to the passed message
-        alertBox.style.display = 'block'; // makes the alert box visible
-        if (isScanning) {
-            alertBox.style.backgroundColor = '#8B0000'; // scanning indication
-        } else {
-            alertBox.style.backgroundColor = '#FF6347'; // error or result display
-        }
-    }
-
-    document.querySelector('.closebtn').addEventListener('click', function() {
-        this.parentNode.style.display = 'none'; // hides the parent element of the close button, effectively closing the alert box
-
-    });
-</script>
+    </script>
+</body>
+</html>
