@@ -22,7 +22,6 @@ p.robotic {
     min-height: 100vh; /* container is at least as tall as the viewport. */
     width: 100%; /* spans the full width of the viewport. */
     background-color: #000; /* background color to black. */
-    background-image: url('https://i.gifer.com/7jiL.gif'); /* set a dynamic GIF as the background. */
     background-position: center; /* centers the background image in the container. */
     background-repeat: no-repeat; /* prevents the background image from tiling. */
     background-size: cover; /* background image covers the entire area of the container. */

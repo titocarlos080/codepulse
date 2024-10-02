@@ -16,7 +16,6 @@ body {
 }
 
 nav.top-nav {
-    background-image: url('https://i.gifer.com/7Gt8.gif'); /* Path to your GIF */
     background-position: center; /* Center the background image */
     background-repeat: no-repeat; /* Prevent the background image from repeating */
     background-size: cover; /* Cover the entire area of the nav, adjust as needed */

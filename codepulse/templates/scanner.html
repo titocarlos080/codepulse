@@ -11,11 +11,8 @@
 <body>
     <header> 
         <nav class="top-nav">
-            <a href="{% url 'signout' %}">Sign Out</a>
-            <a href="{% url 'xss_page' %}">Cross Site Scripting (XSS)</a>
-            <a href="{% url 'sql_injection_page' %}">SQL Injection</a>                     
-            <a href="{% url 'csrf_page' %}">Cross Site Request Forgery (CSRF)</a>
-            <a href="{% url 'scaned_sites' %}">Scaned Sites</a>
+            {% include 'navbar.html' %} 
+
         </nav>
         <h1>Welcome, {{ username }}!</h1>
         {% if messages %}
@@ -147,5 +144,8 @@
             }
         });
     </script>
+    {% include 'footer.html' %}
+
+
 </body>
 </html>

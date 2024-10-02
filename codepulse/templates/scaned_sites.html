@@ -1,3 +1,4 @@
+{% load static %}  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,28 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan Sites</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    {% load static %}  
     <link rel="stylesheet" href="{% static 'css/scaned_sites.css' %}">
 </head>
-
- 
 <body>
-    <header > 
+    <header>
         <nav class="top-nav">
-            <a href="{% url 'signout' %}">Sign Out</a>
-            <a href="{% url 'xss_page' %}">Cross Site Scripting (XSS)</a>
-            <a href="{% url 'sql_injection_page' %}">SQL Injection </a>                     
-            <a href="{% url 'csrf_page' %}">Cross Site Request Forgery (CSRF)</a>
+            {% include 'navbar.html' %}
         </nav>
-        <h1>Welcome, {{ username }}!</h1>
-        <ul>
+        <div class="welcome-message">
+            <h1>Welcome, {{ username }}!</h1>
+            <p>Here are the URLs you have scanned:</p>
+        </div>
+    </header>
+
+    <main>
+        <ul class="scanned-list">
             {% for scan in scanned_urls %}
-                <li>{{ scan.url }} - Scanned on: {{ scan.scanned_on }}</li>
+                <li class="scanned-item">
+                    <span class="url">{{ scan.url }}</span> 
+                    <span class="scanned-date">Scanned on: {{ scan.scanned_on }}</span>
+                </li>
             {% empty %}
-                <li>No scanned URLs found.</li>
+                <li class="no-scans">No scanned URLs found.</li>
             {% endfor %}
         </ul>
-        <h1>Scan here</h1>
-    </header>
+        <div class="actions">
+            <a href="{% url 'scanner' %}" class="button">Scan New URL</a>
+            <a href="{% url 'home' %}" class="button">Home</a>
+        </div>
+    </main>
+
+    {% include 'footer.html' %}
 </body>
 </html>

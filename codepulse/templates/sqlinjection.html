@@ -12,9 +12,8 @@
 <body>
     <header>
             <nav class="top-nav">
-            <a href="{% url 'scanner' %}">Back To Scan</a></li>
-            <a href="{% url 'xss_page' %}">Cross Site Scripting (XSS)</a>
-            <a href="{% url 'csrf_page' %}">Cross Site Request Forgery (CSRF)</a>
+                {% include 'navbar.html' %} 
+
 
         </nav>
     </header>
@@ -74,5 +73,7 @@
                 </ul>
             </section>
         </main>
+        {% include 'footer.html' %}
+
     </body>
     </html>
