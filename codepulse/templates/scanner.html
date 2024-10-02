@@ -82,8 +82,11 @@
                     type: "POST",
                     data: formData,
                     success: function(response) {
-                        // Handle response for URL scan
-                        showAlert(response.message, false);
+                    
+                        var resultsText = formatResults(response.results);
+
+                        // Mostrar el mensaje y los resultados formateados
+                        showAlert(response.message + "\n" + resultsText, false);
                     },
                     error: function(xhr, status, error) {
                         showAlert('Error occurred: ' + error, true);
@@ -123,16 +126,49 @@
                 });
             });
 
+            // Función para formatear los resultados de la respuesta
+            function formatResults(results) {
+                let formattedResults = '';
+
+                // Procesar resultados de XSS
+                if (results.XSS.length > 0) {
+                    formattedResults += 'XSS Vulnerabilities:\n';
+                    results.XSS.forEach(function(vuln, index) {
+                        formattedResults += `  ${index + 1}. Description: ${vuln.description}\n`;
+                        formattedResults += `     Severity: ${vuln.severity}\n`;
+                        formattedResults += `     Remediation: ${vuln.remediation}\n\n`;
+                    });
+                } else {
+                    formattedResults += 'No XSS vulnerabilities detected.\n';
+                }
+
+                // Procesar resultados de SQL Injection
+                if (results["SQL Injection"].length > 0) {
+                    formattedResults += 'SQL Injection Vulnerabilities:\n';
+                    results["SQL Injection"].forEach(function(vuln, index) {
+                        formattedResults += `  ${index + 1}. Description: ${vuln.description}\n`;
+                        formattedResults += `     Severity: ${vuln.severity}\n`;
+                        formattedResults += `     Remediation: ${vuln.remediation}\n\n`;
+                    });
+                } else {
+                    formattedResults += 'No SQL Injection vulnerabilities detected.\n';
+                }
+
+                return formattedResults;
+            }
+
+            // Función showAlert para mostrar el resultado en un elemento del DOM
             function showAlert(message, isScanning) {
                 var alertBox = document.getElementById('alert-box');
-                alertBox.querySelector('#alert-content').innerHTML = message;
+                alertBox.querySelector('#alert-content').innerHTML = message.replace(/\n/g, '<br>');  // Reemplaza saltos de línea por <br> para HTML
                 alertBox.style.display = 'block';
                 if (isScanning) {
-                    alertBox.style.backgroundColor = '#8B0000';
+                    alertBox.style.backgroundColor = '#8B0000'; // Fondo rojo para error
                 } else {
-                    alertBox.style.backgroundColor = '#FF6347';
+                    alertBox.style.backgroundColor = '#FF6347'; // Color más suave para no-error
                 }
             }
+
 
             function showPortAlert(message, isScanning) {
                 var portAlertBox = document.getElementById('port-alert-box');
